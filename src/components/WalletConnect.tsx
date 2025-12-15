@@ -117,6 +117,12 @@ export function WalletConnect() {
           </Button>
         </div>
       )}
+      {/* Helper Note */}
+      {!((isWagmiConnected && address) || (isLineraConnected && lineraAccount)) && (
+        <div className="absolute -bottom-6 left-0 right-0 text-[10px] text-center text-muted-foreground opacity-70">
+          Supports Linera & EVM Wallets
+        </div>
+      )}
     </div>
   )
 }

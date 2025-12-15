@@ -23,6 +23,7 @@ const Landing = lazy(() => import("./pages/Landing.tsx"));
 // const Arena = lazy(() => import("./pages/Arena.tsx"));
 const AuthPage = lazy(() => import("./pages/Auth.tsx"));
 const NotFound = lazy(() => import("./pages/NotFound.tsx"));
+const Whitepaper = lazy(() => import("./pages/Whitepaper.tsx"));
 
 // Simple loading fallback for route transitions
 function RouteLoading() {
@@ -74,6 +75,7 @@ createRoot(document.getElementById("root")!).render(
                     <Route path="/" element={<Landing />} />
                     <Route path="/arena" element={<Arena />} />
                     <Route path="/auth" element={<AuthPage redirectAfterAuth="/arena" />} />
+                    <Route path="/whitepaper" element={<Whitepaper />} />
                     <Route path="*" element={<NotFound />} />
                   </Routes>
                 </Suspense>
