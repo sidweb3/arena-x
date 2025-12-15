@@ -22,9 +22,7 @@ export function Navbar() {
             <Button variant="ghost" onClick={() => navigate("/whitepaper")} className="hidden md:flex">
               Whitepaper
             </Button>
-            <div className="relative z-50">
-              <WalletConnect />
-            </div>
+            <WalletConnect />
           </div>
         </div>
       </div>
