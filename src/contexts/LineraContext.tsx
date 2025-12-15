@@ -34,7 +34,23 @@ export function LineraProvider({ children }: { children: ReactNode }) {
       // Check for injected Linera provider
       if (typeof window !== 'undefined' && (window as any).linera) {
         const provider = (window as any).linera;
-        const accounts = await provider.request({ method: 'eth_requestAccounts' }); // Assuming standard interface or similar
+        console.log("Found Linera provider");
+        
+        let accounts;
+        try {
+          // Try standard request first
+          accounts = await provider.request({ method: 'eth_requestAccounts' });
+        } catch (e) {
+          console.log("eth_requestAccounts failed, trying linera_accounts");
+          try {
+             // Fallback to specific linera method if exists
+             accounts = await provider.request({ method: 'linera_accounts' });
+          } catch (e2) {
+             console.error("Failed to request accounts", e2);
+             // Don't throw yet, might be a different API
+          }
+        }
+
         if (accounts && accounts.length > 0) {
            setAccount(accounts[0]);
            setChainId("linera-mainnet"); // or fetch from provider

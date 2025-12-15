@@ -2,6 +2,6 @@
 
 interface Window {
   linera?: {
-    request: (args: { method: string; params?: any[] }) => Promise<any>;
+    request: (args: { method: string; params?: any }) => Promise<any>;
   };
 }
