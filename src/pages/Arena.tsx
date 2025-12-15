@@ -14,6 +14,7 @@ import { useAccount } from "wagmi";
 import type { Doc } from "@/convex/_generated/dataModel";
 
 export default function Arena() {
+  console.log("Arena page loading...");
   const navigate = useNavigate();
   const { isConnected } = useAccount();
   const [activeTab, setActiveTab] = useState("active");

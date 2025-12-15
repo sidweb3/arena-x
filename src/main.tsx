@@ -12,12 +12,13 @@ import { config } from './lib/wagmi'
 import "./index.css";
 import "./types/global.d.ts";
 import { WalletSync } from "./components/WalletSync";
+import Arena from "./pages/Arena.tsx";
 
 const queryClient = new QueryClient()
 
 // Lazy load route components for better code splitting
 const Landing = lazy(() => import("./pages/Landing.tsx"));
-const Arena = lazy(() => import("./pages/Arena.tsx"));
+// const Arena = lazy(() => import("./pages/Arena.tsx"));
 const AuthPage = lazy(() => import("./pages/Auth.tsx"));
 const NotFound = lazy(() => import("./pages/NotFound.tsx"));
 
