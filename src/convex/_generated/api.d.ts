@@ -13,6 +13,7 @@ import type * as auth from "../auth.js";
 import type * as auth_emailOtp from "../auth/emailOtp.js";
 import type * as duels from "../duels.js";
 import type * as http from "../http.js";
+import type * as testing from "../testing.js";
 import type * as users from "../users.js";
 
 import type {
@@ -27,6 +28,7 @@ declare const fullApi: ApiFromModules<{
   "auth/emailOtp": typeof auth_emailOtp;
   duels: typeof duels;
   http: typeof http;
+  testing: typeof testing;
   users: typeof users;
 }>;
 
