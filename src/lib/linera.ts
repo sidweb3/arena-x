@@ -105,9 +105,15 @@ export async function queryContract(applicationId: string, query: string) {
   // Mock query response if no wallet/node available
   if (!window.linera && LINERA_CONFIG.nodeUrl.includes("localhost")) {
      console.log("Returning mock query response");
+     // Simulate dynamic state changes
+     const mockBlockHeight = Math.floor(Date.now() / 10000); 
      return {
        data: {
-         value: "Mock State"
+         value: "Mock State",
+         blockHeight: mockBlockHeight,
+         timestamp: Date.now(),
+         activeValidators: 4,
+         chainId: "linera-testnet-mock-1"
        }
      };
   }
