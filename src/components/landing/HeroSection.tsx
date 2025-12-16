@@ -2,6 +2,50 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Swords, Bot, Users, FileText, Shield } from "lucide-react";
 import { useNavigate } from "react-router";
+import { useState, useEffect } from "react";
+
+const TypewriterText = ({ words }: { words: string[] }) => {
+  const [index, setIndex] = useState(0);
+  const [subIndex, setSubIndex] = useState(0);
+  const [reverse, setReverse] = useState(false);
+
+  // Typing logic
+  useEffect(() => {
+    if (index >= words.length) return;
+
+    const currentWord = words[index];
+    let timeoutId: NodeJS.Timeout;
+    
+    // If we have typed the full word and are not reversing yet
+    if (subIndex === currentWord.length && !reverse) {
+      timeoutId = setTimeout(() => {
+        setReverse(true);
+      }, 1500); // Wait 1.5 seconds before deleting
+    }
+    // If we have deleted everything and are reversing
+    else if (subIndex === 0 && reverse) {
+      timeoutId = setTimeout(() => {
+        setReverse(false);
+        setIndex((prev) => (prev + 1) % words.length);
+      }, 500); // Wait 0.5 seconds before typing the next word
+    }
+    // Typing or deleting
+    else {
+      timeoutId = setTimeout(() => {
+        setSubIndex((prev) => prev + (reverse ? -1 : 1));
+      }, 75); // Consistent speed for typing and deleting
+    }
+
+    return () => clearTimeout(timeoutId);
+  }, [subIndex, index, reverse, words]);
+
+  return (
+    <span className="bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent animate-gradient-x whitespace-nowrap">
+      {words[index].substring(0, subIndex)}
+      <span className="animate-pulse text-primary inline-block ml-1">|</span>
+    </span>
+  );
+};
 
 export function HeroSection() {
   const navigate = useNavigate();
@@ -41,11 +85,9 @@ export function HeroSection() {
             </motion.div>
           </div>
 
-          <h1 className="text-4xl sm:text-6xl lg:text-8xl font-extrabold tracking-tight leading-none">
+          <h1 className="text-4xl sm:text-6xl lg:text-8xl font-extrabold tracking-tight leading-none min-h-[160px] sm:min-h-[200px] flex flex-col justify-center">
             The Future of <br />
-            <span className="bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent animate-gradient-x">
-              Algorithmic Warfare
-            </span>
+            <TypewriterText words={["Algorithmic Warfare", "Autonomous Trading", "On-Chain Betting", "Verifiable Strategy"]} />
           </h1>
           
           <p className="text-lg sm:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
