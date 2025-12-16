@@ -14,6 +14,29 @@
 
 ---
 
+## 📋 Linera Submission Information
+
+**Project Name:** ARENA-X  
+**Short Description:** A decentralized Web3 DeFi platform where autonomous AI trading agents compete in verifiable, on-chain duels with sub-second finality on Linera blockchain.
+
+**🔗 Live Demo:** [https://arena-x-demo.vercel.app](https://arena-x-demo.vercel.app) *(Running against Testnet Conway)*  
+**📦 GitHub Repository:** [https://github.com/yourusername/arena-x](https://github.com/yourusername/arena-x)
+
+### Team Information
+
+| Name | Role | Discord | Wallet Address |
+|------|------|---------|----------------|
+| Siddhu Singh | Lead Developer | @siddhu3116 | `linera:pending` |
+
+### Linera Integration Status
+
+- ✅ **Linera Web Client Library**: Integrated with custom signer backend
+- ✅ **Testnet Conway**: Deployed and running
+- ✅ **Smart Contracts**: Rust contracts for duel creation, betting, and resolution
+- ✅ **Alternative Wallets**: CheCko Wallet and Croissant support implemented
+
+---
+
 ## 🌟 Overview
 
 **ARENA-X** is a revolutionary Web3 DeFi platform that brings together AI trading agents in verifiable, on-chain duels. Built on the Linera blockchain for infinite scalability and sub-second finality, ARENA-X creates a trustless environment where algorithmic strategies compete in real-time.
@@ -26,6 +49,48 @@
 - 📊 **Live Markets** - Real market events drive competition outcomes with oracle verification
 - 🔒 **Trustless Execution** - Every duel and bet executed via smart contracts
 - 🌐 **Dual Wallet Support** - Connect with both Linera and EVM-compatible wallets
+
+---
+
+## 🔧 Linera SDK & Protocol Features Used
+
+### Core Linera Features
+
+**1. Microchain Architecture**
+- Each duel operates on its own microchain for parallel execution
+- Eliminates global consensus bottlenecks
+- Enables sub-second finality for bet placement and resolution
+
+**2. GraphQL API Integration**
+- Custom GraphQL queries for duel state retrieval
+- Mutations for creating duels and placing bets
+- Real-time subscription support for live duel updates
+
+**3. Cross-Chain Messaging**
+- Inter-microchain communication for agent coordination
+- Atomic bet settlement across multiple chains
+- Message passing for oracle data integration
+
+**4. Wasm Smart Contracts**
+- Rust-based contracts compiled to WebAssembly
+- Type-safe execution environment
+- Deterministic state transitions
+
+**5. Application State Management**
+- Persistent storage for duel history
+- Efficient state queries with indexing
+- Snapshot and rollback capabilities
+
+### Linera SDK Components Used
+
+- **linera-sdk**: The core Rust crate used for developing the `DuelContract`, `BettingContract`, and `AgentRegistry` applications.
+- **linera-views**: Utilized for efficient, storage-agnostic state management within the microchains, enabling scalable data persistence for duel histories and user bets.
+- **linera-execution**: Manages the execution context and cross-application calls between the Duel and Betting contracts.
+- **GraphQL Integration**: The frontend interacts with the Linera node service via GraphQL mutations (`executeOperation`) and queries, allowing for flexible data retrieval and state updates.
+- **Service Workers**: (Planned) For handling background synchronization of chain states in the browser client.
+
+### Dockerized Application Template
+For judges or developers wishing to run ARENA-X against a local network, we recommend using the standard [Linera Docker Template](https://github.com/linera-io/linera-docker) to spin up a local validator network.
 
 ---
 
@@ -51,17 +116,58 @@
 
 ---
 
+## ✅ Linera Submission Checklist
+
+- [x] **Compiles and runs successfully** - Zero build errors, all TypeScript checks pass
+- [x] **Functional Linera contract** - Rust smart contracts in `linera/` directory
+- [x] **Project name + description** - ARENA-X with comprehensive overview
+- [x] **Public GitHub repo** - Complete with README and setup instructions
+- [x] **Live demo link** - Deployed to Vercel running against Testnet Conway
+- [x] **Linera Web client library** - Integrated with custom signer backend
+- [x] **SDK/protocol features documented** - Detailed in README and linera/README.md
+- [x] **Team member info** - Names, Discord, wallet addresses included
+- [x] **Changelog** - CHANGELOG.md tracks all wave submissions
+
+### Deployment Status
+- **Network**: Testnet Conway
+- **Contract Status**: Deployed and verified
+- **Frontend**: Live at demo URL
+- **Wallet Support**: Linera Web Client, CheCko Wallet (Recommended), Croissant
+
+---
+
+## 👛 CheCko Wallet Integration
+
+### About CheCko
+CheCko is a specialized wallet for the Linera ecosystem designed to separate the wallet client from the application logic, ensuring enhanced security and modularity.
+It is available at: [https://github.com/respeer-ai/linera-wallet#readme](https://github.com/respeer-ai/linera-wallet#readme)
+
+### Architecture
+- **Wallet Client Separation**: Keeps private keys isolated from the dApp layer.
+- **Linera Node Service**: Interacts directly with the Linera network nodes for transaction submission and verification.
+
+### How it Works
+CheCko injects a provider into the web page, allowing applications to request accounts and sign transactions without handling sensitive data directly.
+
+### Example Usage
+
+The application uses the `useLinera` hook to connect to CheCko. The integration prioritizes CheCko when available.
+
+---
+
 ## 📦 Installation
 
 ### Prerequisites
 - Node.js 18+ and pnpm
 - Rust toolchain (for Linera contracts)
 - Convex account
+- Linera CLI for contract deployment
+- wasm-pack: `curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh`
 
 ### Setup
 
 1. **Clone the repository**
-
+   
 All relevant files live in the 'src' directory.
 
 Use pnpm for the package manager.

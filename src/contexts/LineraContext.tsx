@@ -1,12 +1,16 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 import { toast } from "sonner";
 
+// Define supported wallet types
+export type LineraWalletType = 'default' | 'checko' | 'croissant';
+
 // Interface for the Linera Context
 interface LineraContextType {
   isConnected: boolean;
   account: string | null;
   chainId: string | null;
-  connect: () => Promise<void>;
+  walletType: LineraWalletType | null;
+  connect: (type?: LineraWalletType) => Promise<void>;
   disconnect: () => void;
   isLoading: boolean;
   error: string | null;
@@ -24,14 +28,86 @@ export function LineraProvider({ children }: { children: ReactNode }) {
   const [isConnected, setIsConnected] = useState(false);
   const [account, setAccount] = useState<string | null>(null);
   const [chainId, setChainId] = useState<string | null>(null);
+  const [walletType, setWalletType] = useState<LineraWalletType | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isMock, setIsMock] = useState(false);
 
-  const connect = async () => {
+  const connect = async (type: LineraWalletType = 'default') => {
     setIsLoading(true);
     setError(null);
     setIsMock(false);
+    
+    // Handle specific wallet types
+    if (type === 'checko') {
+      console.log("Attempting to connect to CheCko wallet...");
+      if ((window as any).checko) {
+        try {
+          // Request accounts from CheCko
+          // Note: CheCko might use a different method signature, but we'll assume standard Linera provider compatibility
+          // or the specific 'linera_accounts' method if documented
+          const accounts = await (window as any).checko.request({ method: 'linera_accounts' });
+          
+          if (accounts && accounts.length > 0) {
+            setAccount(accounts[0]);
+            setChainId("linera-mainnet"); 
+            setWalletType('checko');
+            setIsConnected(true);
+            setIsMock(false);
+            toast.success("Connected to CheCko Wallet");
+            setIsLoading(false);
+            return;
+          }
+        } catch (e) {
+          console.error("CheCko connection failed:", e);
+          toast.error("Failed to connect to CheCko Wallet");
+        }
+      } else {
+        // If CheCko is not detected, we can prompt the user to install it
+        // For now, we'll show the info toast
+        toast.info("CheCko Wallet not detected. Opening installation guide...");
+        window.open("https://github.com/respeer-ai/linera-wallet#readme", "_blank");
+      }
+      setIsLoading(false);
+      return;
+    }
+    
+    if (type === 'croissant') {
+      console.log("Attempting to connect to Croissant wallet...");
+      if ((window as any).linera) {
+        try {
+          // Croissant uses { type: 'CONNECT_WALLET' }
+          const result = await (window as any).linera.request({ type: 'CONNECT_WALLET' });
+          console.log("Croissant connection result:", result);
+          
+          // Attempt to extract address from result
+          let address = "Croissant User";
+          if (typeof result === 'string') {
+            address = result;
+          } else if (result && typeof result === 'object' && 'address' in result) {
+            address = result.address;
+          } else if (result && typeof result === 'object' && 'account' in result) {
+            address = result.account;
+          }
+
+          setAccount(address);
+          setChainId("linera-testnet"); 
+          setWalletType('croissant');
+          setIsConnected(true);
+          setIsMock(false);
+          toast.success("Connected to Croissant Wallet");
+        } catch (e) {
+          console.error("Croissant connection failed:", e);
+          toast.error("Failed to connect to Croissant Wallet");
+        }
+      } else {
+        toast.info("Croissant Wallet not detected. Opening installation guide...");
+        window.open("https://github.com/Nirajsah/croissant", "_blank");
+      }
+      setIsLoading(false);
+      return;
+    }
+
     try {
       console.log("Initializing Linera connection...");
       
@@ -45,7 +121,7 @@ export function LineraProvider({ children }: { children: ReactNode }) {
           // Try standard request first
           accounts = await provider.request({ method: 'eth_requestAccounts' });
         } catch (e) {
-          console.log("eth_requestAccounts failed, trying linera_accounts");
+          console.log("eth_requestAccounts failed, trying linera_accounts", e);
           try {
              // Fallback to specific linera method if exists
              accounts = await provider.request({ method: 'linera_accounts' });
@@ -58,6 +134,7 @@ export function LineraProvider({ children }: { children: ReactNode }) {
         if (accounts && accounts.length > 0) {
            setAccount(accounts[0]);
            setChainId("linera-mainnet"); // or fetch from provider
+           setWalletType('default');
            setIsConnected(true);
            setIsMock(false);
            return;
@@ -76,6 +153,7 @@ export function LineraProvider({ children }: { children: ReactNode }) {
       
       setAccount(mockAddress);
       setChainId("linera-testnet-mock");
+      setWalletType('default');
       setIsConnected(true);
       setIsMock(true);
       toast.info("Connected to Linera (Simulated Network)");
@@ -85,6 +163,7 @@ export function LineraProvider({ children }: { children: ReactNode }) {
       setError(err instanceof Error ? err.message : "Failed to connect to Linera wallet");
       setIsConnected(false);
       setIsMock(false);
+      setWalletType(null);
     } finally {
       setIsLoading(false);
     }
@@ -93,12 +172,13 @@ export function LineraProvider({ children }: { children: ReactNode }) {
   const disconnect = () => {
     setAccount(null);
     setChainId(null);
+    setWalletType(null);
     setIsConnected(false);
     setIsMock(false);
   };
 
   return (
-    <LineraContext.Provider value={{ isConnected, account, chainId, connect, disconnect, isLoading, error, isMock }}>
+    <LineraContext.Provider value={{ isConnected, account, chainId, walletType, connect, disconnect, isLoading, error, isMock }}>
       {children}
     </LineraContext.Provider>
   );
@@ -113,6 +193,7 @@ export function useLinera() {
       isConnected: false,
       account: null,
       chainId: null,
+      walletType: null,
       connect: async () => {},
       disconnect: () => {},
       isLoading: false,
